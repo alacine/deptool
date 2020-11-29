@@ -1,22 +1,9 @@
-package main
-
-const (
-	_  = iota
-	KB = 1 << (10 * iota)
-	MB = 1 << (10 * iota)
-	GB = 1 << (10 * iota)
-)
-
-const (
-	MAX_UPLOAD_SIZE = 500 * MB
-	PKG_FILE_MODE   = 0666
-	PKG_DIR         = "."
-)
+package defs
 
 type Resp struct {
 	Code    int    `json:"code"`
-	Message string `message:"message"`
-	//Data    interface{} `data:"data"`
+	Message string `json:"message"`
+	Detail  string `json:"detail"`
 }
 
 type BuildParams struct {
@@ -28,17 +15,21 @@ var (
 	SUCCESS = Resp{
 		Code:    0,
 		Message: "success",
+		Detail:  "",
 	}
 	UPLOAD_FAILED = Resp{
 		Code:    1,
 		Message: "upload faild: ",
+		Detail:  "",
 	}
 	BUILD_FAILED = Resp{
 		Code:    2,
 		Message: "build failed: ",
+		Detail:  "",
 	}
 	PUSH_FAILED = Resp{
 		Code:    3,
 		Message: "push failed: ",
+		Detail:  "",
 	}
 )

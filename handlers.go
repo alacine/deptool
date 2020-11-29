@@ -11,6 +11,8 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+
+	"github.com/alacine/deploy/defs"
 )
 
 // upload
@@ -21,51 +23,51 @@ func upload(w http.ResponseWriter, r *http.Request) {
 		sendErrorResponse(
 			w,
 			http.StatusMethodNotAllowed,
-			UPLOAD_FAILED,
+			defs.UPLOAD_FAILED,
 			errors.New("only for POST"),
 		)
 		return
 	}
 
-	if err := r.ParseMultipartForm(MAX_UPLOAD_SIZE); err != nil {
-		sendErrorResponse(w, http.StatusBadRequest, UPLOAD_FAILED, err)
+	if err := r.ParseMultipartForm(defs.MAX_UPLOAD_SIZE); err != nil {
+		sendErrorResponse(w, http.StatusBadRequest, defs.UPLOAD_FAILED, err)
 		return
 	}
 
 	file, fileHeader, err := r.FormFile("package")
 	if err != nil {
-		sendErrorResponse(w, http.StatusBadGateway, UPLOAD_FAILED, err)
+		sendErrorResponse(w, http.StatusBadGateway, defs.UPLOAD_FAILED, err)
 		return
 	}
 
 	data, err := ioutil.ReadAll(file)
 	if err != nil {
-		sendErrorResponse(w, http.StatusInternalServerError, UPLOAD_FAILED, err)
+		sendErrorResponse(w, http.StatusInternalServerError, defs.UPLOAD_FAILED, err)
 		return
 	}
 
 	err = ioutil.WriteFile(
-		filepath.Join(PKG_DIR, fileHeader.Filename),
+		filepath.Join(defs.PKG_DIR, fileHeader.Filename),
 		data,
-		PKG_FILE_MODE,
+		defs.PKG_FILE_MODE,
 	)
 	if err != nil {
-		sendErrorResponse(w, http.StatusInternalServerError, UPLOAD_FAILED, err)
+		sendErrorResponse(w, http.StatusInternalServerError, defs.UPLOAD_FAILED, err)
 		return
 	}
 
 	//log.Println(fileHeader.Filename)
-	sendNormalResponse(w, http.StatusOK, SUCCESS)
+	sendNormalResponse(w, http.StatusOK, defs.SUCCESS)
 }
 
 // build
 func build(w http.ResponseWriter, r *http.Request) {
 	log.Println("get build request from:", r.Host)
 	body, _ := ioutil.ReadAll(r.Body)
-	bp := &BuildParams{}
+	bp := &defs.BuildParams{}
 	if err := json.Unmarshal(body, bp); err != nil {
 		log.Println(err)
-		sendErrorResponse(w, http.StatusBadRequest, BUILD_FAILED, err)
+		sendErrorResponse(w, http.StatusBadRequest, defs.BUILD_FAILED, err)
 		return
 	}
 	log.Printf("%+v", bp)
@@ -75,16 +77,16 @@ func build(w http.ResponseWriter, r *http.Request) {
 	//cmdOut, _ := cmd.StdoutPipe()
 	if err := cmd.Start(); err != nil {
 		log.Println(err)
-		sendErrorResponse(w, http.StatusInternalServerError, BUILD_FAILED, err)
+		sendErrorResponse(w, http.StatusInternalServerError, defs.BUILD_FAILED, err)
 		return
 	}
 	cmdIn.Write([]byte(bp.Version))
 	cmdIn.Close()
 	//outStr, _ := ioutil.ReadAll(cmdOut)
 	cmd.Wait()
-	//fmt.Println(string(outStr))
 	log.Println("build success")
-	sendNormalResponse(w, http.StatusOK, SUCCESS)
+	//fmt.Println(string(outStr))
+	sendNormalResponse(w, http.StatusOK, defs.SUCCESS)
 }
 
 // clean
@@ -93,10 +95,10 @@ func clean(w http.ResponseWriter, r *http.Request) {
 	cmd := exec.Command("bash", "-c", "./clean.sh")
 	err := cmd.Start()
 	if err != nil {
-		sendErrorResponse(w, http.StatusInternalServerError, BUILD_FAILED, err)
+		sendErrorResponse(w, http.StatusInternalServerError, defs.BUILD_FAILED, err)
 		return
 	}
-	sendNormalResponse(w, http.StatusOK, SUCCESS)
+	sendNormalResponse(w, http.StatusOK, defs.SUCCESS)
 }
 
 // push
@@ -105,8 +107,12 @@ func push(w http.ResponseWriter, r *http.Request) {
 	cmd := exec.Command("bash", "-c", "./upload.sh")
 	err := cmd.Start()
 	if err != nil {
-		sendErrorResponse(w, http.StatusInternalServerError, BUILD_FAILED, err)
+		sendErrorResponse(w, http.StatusInternalServerError, defs.BUILD_FAILED, err)
 		return
 	}
-	sendNormalResponse(w, http.StatusOK, SUCCESS)
+	sendNormalResponse(w, http.StatusOK, defs.SUCCESS)
+}
+
+func status(w http.ResponseWriter, r *http.Request) {
+
 }
