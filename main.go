@@ -4,12 +4,17 @@ package main
 import (
 	"log"
 	"net/http"
+
+	"github.com/alacine/deploy/handlers"
 )
 
 func main() {
-	http.HandleFunc("/upload", upload)
-	http.HandleFunc("/build", build)
-	http.HandleFunc("/push", push)
+	http.HandleFunc("/status", handlers.Status)
+	http.HandleFunc("/upload", handlers.Upload)
+	http.HandleFunc("/build", handlers.Build)
+	http.HandleFunc("/push", handlers.Push)
+	http.HandleFunc("/clean", handlers.Clean)
+	http.HandleFunc("/dict", handlers.Dict)
 	err := http.ListenAndServe(":8000", nil)
 	if err != nil {
 		log.Fatal(err)

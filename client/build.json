@@ -1,0 +1,4 @@
+{
+  "version": "v0.1",
+  "apps": ["dcep-gateway", "dcep-base"]
+}

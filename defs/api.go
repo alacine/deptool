@@ -4,6 +4,7 @@ type Resp struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
 	Detail  string `json:"detail"`
+	State   int    `json:"state"`
 }
 
 type BuildParams struct {
@@ -30,6 +31,11 @@ var (
 	PUSH_FAILED = Resp{
 		Code:    3,
 		Message: "push failed: ",
+		Detail:  "",
+	}
+	CLEAN_FAILED = Resp{
+		Code:    4,
+		Message: "clean failed: ",
 		Detail:  "",
 	}
 )
