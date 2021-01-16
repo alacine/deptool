@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/alacine/deploy/handlers"
+	"github.com/alacine/deptool/handlers"
 )
 
 func main() {

@@ -5,7 +5,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/alacine/deploy/defs"
+	"github.com/alacine/deptool/defs"
 )
 
 func sendNormalResponse(w http.ResponseWriter, sc int, resp defs.Resp) {

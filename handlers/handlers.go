@@ -13,7 +13,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/alacine/deploy/defs"
+	"github.com/alacine/deptool/defs"
 )
 
 var state = defs.CLEANED
